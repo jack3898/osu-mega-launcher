@@ -1,0 +1,8 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+
+  // Tailwind CSS triggers this. It's not an error, so we can ignore it.
+  "css.lint.unknownAtRules": "ignore"
+}
