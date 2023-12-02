@@ -1,7 +1,9 @@
 declare global {
 	interface Window {
 		electron: {
-			getLocalAppData: () => Promise<string>;
+			getEnvironmentVariables: () => Promise<{
+				localAppData: string;
+			}>;
 		};
 	}
 }

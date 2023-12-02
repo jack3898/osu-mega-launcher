@@ -2,11 +2,18 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('electron', {
-	getLocalAppData: () => {
-		return new Promise((resolve) => {
-			ipcRenderer.once('localappdata', (_, envVar) => resolve(envVar));
-			ipcRenderer.send('get-localappdata');
+type ElectronWindow = Window['electron'];
+
+const getEnvironmentVariables: ElectronWindow['getEnvironmentVariables'] = function () {
+	return new Promise((resolve) => {
+		ipcRenderer.once('env', (_, envs) => {
+			resolve(envs.getEnvironmentVariables);
 		});
-	}
-});
+	});
+};
+
+const properties: Record<keyof ElectronWindow, unknown> = {
+	getEnvironmentVariables
+};
+
+contextBridge.exposeInMainWorld('electron', properties);

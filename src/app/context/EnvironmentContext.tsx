@@ -1,4 +1,4 @@
-import { type ReactElement, createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { type ReactElement, createContext, useContext, useState, useEffect, type ReactNode, useMemo } from 'react';
 
 type EnvironmentContextValue = {
 	localAppDataPath: string | undefined;
@@ -13,10 +13,16 @@ export function EnvironmentContextProvider({ children }: { children: ReactNode }
 	const [localAppDataPath, setLocalAppData] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
-		window.electron.getLocalAppData().then(setLocalAppData);
+		window.electron.getEnvironmentVariables().then(({ localAppData }) => {
+			setLocalAppData(localAppData);
+		});
 	}, []);
 
-	return <EnvironmentContext.Provider value={{ localAppDataPath }}>{children}</EnvironmentContext.Provider>;
+	// A useMemo is good practice to avoid unnecessary re-renders. In this case it's not necessary.
+	// Any future internal state changes to this provider would trigger a re-render of all context consumers even if the value doesn't need it.
+	const providerValue = useMemo(() => ({ localAppDataPath }), [localAppDataPath]);
+
+	return <EnvironmentContext.Provider value={providerValue}>{children}</EnvironmentContext.Provider>;
 }
 
 export function useEnvironmentContext(): EnvironmentContextValue {

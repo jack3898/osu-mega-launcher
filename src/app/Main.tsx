@@ -1,11 +1,14 @@
 import { type ReactElement } from 'react';
-import { EnvironmentContextProvider } from '../context/EnvironmentContext';
+import { EnvironmentContextProvider } from './context/EnvironmentContext';
 import { Home } from './Home';
+import { PageContainer } from './components/PageContainer';
 
 export function Main(): ReactElement {
 	return (
 		<EnvironmentContextProvider>
-			<Home />
+			<PageContainer>
+				<Home />
+			</PageContainer>
 		</EnvironmentContextProvider>
 	);
 }
